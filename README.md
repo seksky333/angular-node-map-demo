@@ -1,27 +1,100 @@
-# AngularNodeMapCaller
+### Ng Node Map - Demo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.10.
+[Module repo](https://github.com/mikerossoft/angular-node-map/)
 
-## Development server
+<img src="images/ng-node-map.gif" width="480" height="320">
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Prerequisite
 
-## Code scaffolding
+## Install font-awesome
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`npm i font-awesome@^4.7.0`
 
-## Build
+## Configure Font Awesome in your Angular project
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Under the angular.json file, add the font-awesome css file into the styles list
 
-## Running unit tests
+```javascript
+"styles": [
+    "src/styles.scss",
+    "./node_modules/font-awesome/css/font-awesome.css"
+],
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# Usage
 
-## Running end-to-end tests
+## Import `NodeMapModule` to your module list:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```javascript
+import { NodeMapModule } from 'ng-node-map';
 
-## Further help
+@NgModule({
+declarations: [AppComponent],
+imports: [BrowserModule, NodeMapModule],
+providers: [],
+bootstrap: [AppComponent],
+})
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Setup in your HTML file
+
+```html
+<app-node-map
+  [dataSource]="dataSourceJson"
+  [onEdit]="onEditCallback"
+  [onDelete]="onDeleteCallback"
+  [onAdd]="onAddCallback"
+  [onSelect]="onSelectCallback"
+></app-node-map>
+```
+
+## Setup in your component ts file
+
+```javascript
+import { NodeMapModule } from 'ng-node-map';
+...
+export class AppComponent implements OnInit {
+    @ViewChild(NodeMapModule) nodeMap: NodeMapModule;
+    dataSourceJson = {};
+        public onDeleteCallback = (item?: any): void => {
+        console.log(`onDelete - item: ${item} uri:${item.uri}`);
+    };
+    public onEditCallback = (item?: any): void => {
+        console.log(`onEdit - item: ${item} uri:${item.uri}`);
+    };
+    public onAddCallback = (item?: any): void => {
+        console.log(`onAdd - item: ${item} uri:${item.uri}`);
+    };
+    public onSelectCallback = (item?: any): void => {
+        console.log(`onSelect - item: ${item} uri:${item.uri}`);
+    };
+    //your JSON data for generating the Node Map e.g.
+        dataBusData: object = {
+            root: {
+                name:'DataBus',
+                nodes: [
+                    {
+                        uri: 'id-1',
+                        name: 'SCADA',
+                        description: 'Stuff',
+                        plugin: 'OPC HDA',
+                        type: 'Connector',
+                        bodyColour: '#1976D2',
+                        borderColour: '#FFF',
+                        canAdd: false,
+                        canEdit: true,
+                        canDelete: true,
+                        ...
+                    }
+                ]
+            }
+        }
+    ngOnInit(): void {
+        this.dataSourceJson = dataBusData;
+    }
+}
+```
+
+## Execute your project
+
+`ng serve -o`
